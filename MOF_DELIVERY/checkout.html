@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Checkout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    input:focus, select:focus, textarea:focus {
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+    }
+    .hidden { display: none; }
+    .radio-label {
+      transition: all 0.2s ease;
+    }
+    input[type="radio"]:checked + .radio-label {
+      background: rgba(37, 99, 235, 0.25) !important;
+      border-color: #2563eb !important;
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen pb-32">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="flex items-center justify-between px-5 py-4">
+      <a href="cart.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Back
+      </a>
+      <h1 class="text-xl font-bold">Checkout</h1>
+      <div class="w-8"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="px-5 pt-6 pb-40 space-y-8 max-w-md mx-auto">
+
+    <!-- Order Summary -->
+    <section class="glass rounded-3xl p-6">
+      <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
+      <div class="space-y-3 text-blue-100">
+        <div class="flex justify-between">
+          <span>Subtotal (3 items)</span>
+          <span>GHC 85</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Delivery Fee</span>
+          <span>GHC 10</span>
+        </div>
+        <div class="flex justify-between text-xl font-bold text-white border-t border-white/20 pt-3">
+          <span>Total</span>
+          <span>GHC 95</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Delivery Location Picker -->
+    <section class="glass rounded-3xl p-6">
+      <h2 class="text-2xl font-bold mb-5">Delivery Location</h2>
+      
+      <!-- Radio buttons for main choice -->
+      <div class="space-y-4 mb-6">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="locationType" value="office" class="w-5 h-5" checked onchange="toggleDeliveryFields()" />
+          <div class="radio-label glass w-full p-4 rounded-2xl flex items-center gap-3">
+            <i class="fas fa-building text-2xl text-blue-300"></i>
+            <div>
+              <p class="font-semibold">Office / Room</p>
+              <p class="text-sm text-blue-200">Delivered to your floor and room</p>
+            </div>
+          </div>
+        </label>
+
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="locationType" value="cafeteria" class="w-5 h-5" onchange="toggleDeliveryFields()" />
+          <div class="radio-label glass w-full p-4 rounded-2xl flex items-center gap-3">
+            <i class="fas fa-coffee text-2xl text-blue-300"></i>
+            <div>
+              <p class="font-semibold">Cafeteria</p>
+              <p class="text-sm text-blue-200">Delivered to Tower 1 Cafeteria area</p>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Fields shown only for Office/Room -->
+      <div id="officeFields">
+        <div class="mb-5">
+          <label class="block text-white/90 text-sm font-medium mb-2">Floor (1–6)</label>
+          <select class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white focus:bg-white/15 transition-all outline-none">
+            <option value="">Select floor</option>
+            <option value="1">Floor 1</option>
+            <option value="2">Floor 2</option>
+            <option value="3">Floor 3</option>
+            <option value="4">Floor 4</option>
+            <option value="5">Floor 5</option>
+            <option value="6">Floor 6</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">Room / Office / Additional Note</label>
+          <input 
+            type="text" 
+            placeholder="e.g. Room 412, ask for Charles, call on arrival"
+            class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/50 focus:bg-white/15 transition-all outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Note for Cafeteria -->
+      <div id="cafeteriaNote" class="hidden text-blue-200 text-sm mt-4 p-4 bg-white/5 rounded-2xl">
+        Your food will be delivered to the Cafeteria area in Tower 1. Please pick it up there when you get a call/message from the vendor.
+      </div>
+    </section>
+
+    <!-- Payment & Order Button -->
+    <section class="fixed bottom-0 left-0 right-0 glass py-6 px-5 shadow-2xl z-30">
+      <div class="max-w-md mx-auto">
+        <p class="text-center text-blue-200 text-sm mb-4">
+          Payment: <strong>Cash on Delivery</strong> when food arrives
+        </p>
+        <button 
+          id="placeOrderBtn"
+          class="w-full bg-white text-blue-900 py-5 rounded-2xl font-bold text-xl shadow-2xl flex items-center justify-center gap-3 active:scale-95 transition transform"
+          onclick="placeOrder()"
+        >
+          <i class="fas fa-check-circle text-2xl"></i>
+          Place Order • GHC 95
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function toggleDeliveryFields() {
+      const officeRadio = document.querySelector('input[name="locationType"][value="office"]');
+      const officeFields = document.getElementById('officeFields');
+      const cafeteriaNote = document.getElementById('cafeteriaNote');
+
+      if (officeRadio.checked) {
+        officeFields.classList.remove('hidden');
+        cafeteriaNote.classList.add('hidden');
+      } else {
+        officeFields.classList.add('hidden');
+        cafeteriaNote.classList.remove('hidden');
+      }
+    }
+
+    function placeOrder() {
+      const locationType = document.querySelector('input[name="locationType"]:checked')?.value;
+      
+      if (!locationType) {
+        alert("Please select a delivery location.");
+        return;
+      }
+
+      let message = "Order placed successfully!\n\nDelivery to: ";
+
+      if (locationType === "office") {
+        const floor = document.querySelector('#officeFields select')?.value || "not selected";
+        const note = document.querySelector('#officeFields input')?.value || "";
+        message += `Tower 1 - Floor ${floor}`;
+        if (note) message += ` (${note})`;
+      } else {
+        message += "Tower 1 - Cafeteria";
+      }
+
+      message += "\n\nPayment: Cash on Delivery\nThank you for ordering with GateFood!";
+
+      alert(message);
+
+      // In real app → send to backend, clear cart, redirect to success page
+      // window.location.href = 'order-success.html';
+    }
+
+    // Initial setup
+    toggleDeliveryFields();
+  </script>
+
+</body>
+</html>

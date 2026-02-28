@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Vendor Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .error-message {
+      color: #f87171;
+      font-size: 0.875rem;
+      margin-top: 0.375rem;
+      display: none;
+    }
+    input.error, textarea.error {
+      border-color: #f87171 !important;
+      background: rgba(248, 113, 113, 0.1) !important;
+    }
+    #toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      transition: all 0.4s ease;
+    }
+    .toast-show { opacity: 1; transform: translate(-50%, 0); }
+    .toast-hide { opacity: 0; transform: translate(-50%, -20px); }
+    #preview-img { max-height: 140px; object-fit: cover; border-radius: 1rem; }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen pb-24">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="px-5 py-4 flex justify-between items-center">
+      <a href="vendor-dashboard.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+      <h1 class="text-xl font-bold">My Profile</h1>
+      <div class="w-8"></div>
+    </div>
+  </header>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden glass px-6 py-4 rounded-2xl shadow-2xl text-center font-medium text-lg"></div>
+
+  <!-- Profile Form -->
+  <main class="px-5 pt-6 pb-20">
+    <div class="glass rounded-3xl p-6 md:p-8 max-w-lg mx-auto">
+
+      <!-- Current Profile View / Edit Toggle -->
+      <div id="view-mode" class="space-y-6">
+        <div class="text-center">
+          <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-blue-500/30 mb-4">
+            <img id="profile-photo" src="https://images.unsplash.com/photo-1555939594-58056f625634?w=500&auto=format&fit=crop&q=60" alt="Shop Photo" class="w-full h-full object-cover" />
+          </div>
+          <h2 id="shop-name-display" class="text-2xl font-bold mb-1">Aunty Mansa Kitchen</h2>
+          <p id="location-display" class="text-blue-200">Near main gate, Tower 1 area</p>
+        </div>
+
+        <div>
+          <p class="text-blue-200 text-sm mb-1">About your shop</p>
+          <p id="description-display" class="text-base leading-relaxed">
+            Authentic Ghanaian dishes made fresh daily — waakye, jollof, banku & tilapia, kenkey with fish. Fast service to residents in Tower 1.
+          </p>
+        </div>
+
+        <button id="editBtn" class="w-full bg-blue-600/80 hover:bg-blue-600 py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition flex items-center justify-center gap-3">
+          <i class="fas fa-edit"></i> Edit Profile
+        </button>
+      </div>
+
+      <!-- Edit Mode Form (hidden by default) -->
+      <form id="editForm" class="hidden space-y-6">
+        <div class="text-center">
+          <label class="block text-white/90 text-sm font-medium mb-3 cursor-pointer">
+            Shop Photo
+            <input type="file" id="photo" accept="image/*" class="hidden" />
+            <div class="w-32 h-32 mx-auto mt-2 rounded-full overflow-hidden border-4 border-blue-500/30 bg-gray-800/50 flex items-center justify-center relative">
+              <img id="preview-img" src="https://images.unsplash.com/photo-1555939594-58056f625634?w=500&auto=format&fit=crop&q=60" alt="Preview" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition">
+                <i class="fas fa-camera text-3xl text-white"></i>
+              </div>
+            </div>
+          </label>
+          <p id="photo-error" class="error-message text-center">Please select a valid image (max 5MB).</p>
+        </div>
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">Shop Name <span class="text-red-400">*</span></label>
+          <input type="text" id="name" required minlength="3" placeholder="e.g. Aunty Mansa Kitchen" value="Aunty Mansa Kitchen" class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/50 focus:bg-white/15 transition-all outline-none" />
+          <p id="name-error" class="error-message">Shop name must be at least 3 characters.</p>
+        </div>
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">Location / Landmark <span class="text-red-400">*</span></label>
+          <input type="text" id="location" required minlength="5" placeholder="e.g. Near main gate, opposite filling station" value="Near main gate, Tower 1 area" class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/50 focus:bg-white/15 transition-all outline-none" />
+          <p id="location-error" class="error-message">Location must be at least 5 characters.</p>
+        </div>
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">About your shop <span class="text-red-400">*</span></label>
+          <textarea id="description" rows="5" required minlength="10" maxlength="500" placeholder="Tell customers about your food, hours, specialties..." class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/50 focus:bg-white/15 transition-all outline-none">Authentic Ghanaian dishes made fresh daily — waakye, jollof, banku & tilapia, kenkey with fish. Fast service to residents in Tower 1.</textarea>
+          <p id="desc-error" class="error-message">Description must be 10–500 characters.</p>
+        </div>
+
+        <div class="flex gap-4 pt-6">
+          <button type="submit" id="saveBtn" disabled class="flex-1 bg-green-600/50 cursor-not-allowed py-4 rounded-2xl font-bold text-lg transition">
+            Save Changes
+          </button>
+          <button type="button" id="cancelBtn" class="flex-1 bg-red-600/70 hover:bg-red-600 py-4 rounded-2xl font-bold text-lg active:scale-95 transition">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // Simulated current vendor data (in real app → loaded from backend)
+    let vendor = {
+      name: "Aunty Mansa Kitchen",
+      location: "Near main gate, Tower 1 area",
+      description: "Authentic Ghanaian dishes made fresh daily — waakye, jollof, banku & tilapia, kenkey with fish. Fast service to residents in Tower 1.",
+      photo: "https://images.unsplash.com/photo-1555939594-58056f625634?w=500&auto=format&fit=crop&q=60"
+    };
+
+    const viewMode = document.getElementById('view-mode');
+    const editForm = document.getElementById('editForm');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const nameInput = document.getElementById('name');
+    const locationInput = document.getElementById('location');
+    const descInput = document.getElementById('description');
+    const photoInput = document.getElementById('photo');
+    const previewImg = document.getElementById('preview-img');
+    const toast = document.getElementById('toast');
+
+    // Fill view mode
+    document.getElementById('shop-name-display').textContent = vendor.name;
+    document.getElementById('location-display').textContent = vendor.location;
+    document.getElementById('description-display').textContent = vendor.description;
+    document.getElementById('profile-photo').src = vendor.photo;
+    previewImg.src = vendor.photo;
+
+    // Show edit mode
+    editBtn.addEventListener('click', () => {
+      viewMode.classList.add('hidden');
+      editForm.classList.remove('hidden');
+      nameInput.value = vendor.name;
+      locationInput.value = vendor.location;
+      descInput.value = vendor.description;
+      validateForm();
+    });
+
+    // Cancel → back to view
+    cancelBtn.addEventListener('click', () => {
+      editForm.classList.add('hidden');
+      viewMode.classList.remove('hidden');
+    });
+
+    // Photo preview
+    photoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          previewImg.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+      validateForm();
+    });
+
+    // Strict validation + real-time feedback
+    function validateForm() {
+      let valid = true;
+
+      // Name
+      const nameVal = nameInput.value.trim();
+      if (nameVal.length < 3) {
+        nameInput.classList.add('error');
+        document.getElementById('name-error').style.display = 'block';
+        valid = false;
+      } else {
+        nameInput.classList.remove('error');
+        document.getElementById('name-error').style.display = 'none';
+      }
+
+      // Location
+      const locVal = locationInput.value.trim();
+      if (locVal.length < 5) {
+        locationInput.classList.add('error');
+        document.getElementById('location-error').style.display = 'block';
+        valid = false;
+      } else {
+        locationInput.classList.remove('error');
+        document.getElementById('location-error').style.display = 'none';
+      }
+
+      // Description
+      const descVal = descInput.value.trim();
+      if (descVal.length < 10 || descVal.length > 500) {
+        descInput.classList.add('error');
+        document.getElementById('desc-error').style.display = 'block';
+        valid = false;
+      } else {
+        descInput.classList.remove('error');
+        document.getElementById('desc-error').style.display = 'none';
+      }
+
+      // Photo (optional, but if selected → valid image ≤ 5MB)
+      if (photoInput.files.length > 0) {
+        const file = photoInput.files[0];
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!validTypes.includes(file.type) || file.size > 5 * 1024 * 1024) {
+          photoInput.classList.add('error');
+          document.getElementById('photo-error').style.display = 'block';
+          valid = false;
+        } else {
+          photoInput.classList.remove('error');
+          document.getElementById('photo-error').style.display = 'none';
+        }
+      }
+
+      saveBtn.disabled = !valid;
+      saveBtn.classList.toggle('bg-green-600/80', valid);
+      saveBtn.classList.toggle('cursor-pointer', valid);
+      saveBtn.classList.toggle('bg-green-600/50', !valid);
+      saveBtn.classList.toggle('cursor-not-allowed', !valid);
+    }
+
+    // Real-time validation on input/blur
+    [nameInput, locationInput, descInput, photoInput].forEach(el => {
+      el.addEventListener('input', validateForm);
+      el.addEventListener('blur', validateForm);
+    });
+
+    // Form submit
+    editForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      validateForm();
+
+      if (!saveBtn.disabled) {
+        // Update vendor object (simulated save)
+        vendor.name = nameInput.value.trim();
+        vendor.location = locationInput.value.trim();
+        vendor.description = descInput.value.trim();
+        if (previewImg.src) vendor.photo = previewImg.src;
+
+        // Update view mode display
+        document.getElementById('shop-name-display').textContent = vendor.name;
+        document.getElementById('location-display').textContent = vendor.location;
+        document.getElementById('description-display').textContent = vendor.description;
+        document.getElementById('profile-photo').src = vendor.photo;
+
+        showToast('Profile updated successfully!', 'success');
+
+        // Back to view mode
+        editForm.classList.add('hidden');
+        viewMode.classList.remove('hidden');
+      } else {
+        showToast('Please fix the errors before saving', 'error');
+      }
+    });
+
+    function showToast(message, type = 'success') {
+      toast.textContent = message;
+      toast.className = `glass px-6 py-4 rounded-2xl shadow-2xl text-center font-medium text-lg ${type === 'success' ? 'bg-green-600/80' : 'bg-red-600/80'}`;
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-show');
+      setTimeout(() => {
+        toast.classList.remove('toast-show');
+        setTimeout(() => toast.classList.add('hidden'), 400);
+      }, 3000);
+    }
+
+    // Initial validation state
+    validateForm();
+  </script>
+
+</body>
+</html>

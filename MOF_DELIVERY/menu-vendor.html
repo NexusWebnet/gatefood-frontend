@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Aunty Mansa Kitchen Menu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .food-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.25s ease;
+    }
+    .food-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen pb-24">
+
+  <!-- Header / Vendor Info -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="flex items-center justify-between px-5 py-4">
+      <a href="home.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Back
+      </a>
+      <div class="text-center">
+        <h1 class="text-xl font-bold">Aunty Mansa Kitchen</h1>
+        <p class="text-blue-200 text-sm">Near main gate • Open now</p>
+      </div>
+      <div class="w-8"></div> <!-- spacer -->
+    </div>
+  </header>
+
+  <!-- Menu Items -->
+  <main class="px-5 pt-4 space-y-6">
+    <!-- Food Item Card 1 - Waakye -->
+    <div class="food-card rounded-3xl overflow-hidden">
+      <div class="h-48 bg-cover bg-center" style="background-image: url('https://thumbs.dreamstime.com/z/vibrant-hearty-plate-traditional-ghanaian-waakye-featuring-reddish-brown-rice-cooked-millet-leaves-black-eyed-peas-418375241.jpg');"></div>
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl font-semibold">Waakye with Stew</h3>
+          <span class="bg-blue-600/80 px-3 py-1 rounded-full text-sm font-bold">GHC 25</span>
+        </div>
+        <p class="text-blue-100 text-sm mb-4">Classic waakye, stewed meat, plantain, egg, spaghetti & shito sauce. Very filling!</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 bg-white/10 rounded-full px-3 py-2">
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">-</button>
+            <span class="text-lg font-medium">1</span>
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">+</button>
+          </div>
+          <button class="bg-white text-blue-900 px-6 py-3 rounded-full font-bold shadow-lg active:scale-95 transition">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food Item Card 2 - Jollof Rice -->
+    <div class="food-card rounded-3xl overflow-hidden">
+      <div class="h-48 bg-cover bg-center" style="background-image: url('https://thumbs.dreamstime.com/b/nigerian-jollof-rice-traditional-west-african-dish-served-fried-chicken-plantain-delicious-party-food-sweet-413340146.jpg');"></div>
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl font-semibold">Party Jollof Rice</h3>
+          <span class="bg-blue-600/80 px-3 py-1 rounded-full text-sm font-bold">GHC 35</span>
+        </div>
+        <p class="text-blue-100 text-sm mb-4">Smoky jollof with grilled chicken, fried plantain & salad. Perfect for sharing.</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 bg-white/10 rounded-full px-3 py-2">
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">-</button>
+            <span class="text-lg font-medium">1</span>
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">+</button>
+          </div>
+          <button class="bg-white text-blue-900 px-6 py-3 rounded-full font-bold shadow-lg active:scale-95 transition">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food Item Card 3 - Banku & Tilapia -->
+    <div class="food-card rounded-3xl overflow-hidden">
+      <div class="h-48 bg-cover bg-center" style="background-image: url('https://miro.medium.com/0*kvXYnDtTW5lyiJMv');"></div>
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl font-semibold">Banku & Grilled Tilapia</h3>
+          <span class="bg-blue-600/80 px-3 py-1 rounded-full text-sm font-bold">GHC 45</span>
+        </div>
+        <p class="text-blue-100 text-sm mb-4">Fresh grilled tilapia with pepper sauce, banku & side veggies. Fresh catch!</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 bg-white/10 rounded-full px-3 py-2">
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">-</button>
+            <span class="text-lg font-medium">1</span>
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">+</button>
+          </div>
+          <button class="bg-white text-blue-900 px-6 py-3 rounded-full font-bold shadow-lg active:scale-95 transition">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food Item Card 4 - Kenkey with Fish -->
+    <div class="food-card rounded-3xl overflow-hidden">
+      <div class="h-48 bg-cover bg-center" style="background-image: url('https://i.ytimg.com/vi/yAOtQcmkgVU/sddefault.jpg');"></div>
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl font-semibold">Kenkey & Fried Fish</h3>
+          <span class="bg-blue-600/80 px-3 py-1 rounded-full text-sm font-bold">GHC 30</span>
+        </div>
+        <p class="text-blue-100 text-sm mb-4">Ga kenkey with fried fish, pepper sauce & onions. Classic street style.</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 bg-white/10 rounded-full px-3 py-2">
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">-</button>
+            <span class="text-lg font-medium">1</span>
+            <button class="text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20">+</button>
+          </div>
+          <button class="bg-white text-blue-900 px-6 py-3 rounded-full font-bold shadow-lg active:scale-95 transition">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating View Cart Button -->
+  <div class="fixed bottom-6 left-0 right-0 px-5 z-30">
+    <button class="w-full bg-white text-blue-900 py-4 rounded-2xl font-bold text-lg shadow-2xl flex items-center justify-center gap-3 active:scale-95 transition transform">
+      <i class="fas fa-shopping-cart text-xl"></i>
+      View Cart • 3 items • GHC 100
+    </button>
+  </div>
+
+</body>
+</html>

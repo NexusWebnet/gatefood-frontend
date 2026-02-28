@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - My Orders</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .status-pending  { background: #f59e0b; } /* yellow */
+    .status-confirmed { background: #3b82f6; } /* blue */
+    .status-ontheway  { background: #8b5cf6; } /* purple */
+    .status-delivered { background: #10b981; } /* green */
+    .status-cancelled { background: #ef4444; } /* red */
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="flex items-center justify-between px-5 py-4">
+      <a href="home.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Home
+      </a>
+      <h1 class="text-xl font-bold">My Orders</h1>
+      <div class="w-8"></div>
+    </div>
+  </header>
+
+  <!-- Filter Tabs -->
+  <div class="px-5 pt-4 pb-2 flex gap-3 overflow-x-auto">
+    <button class="filter-btn px-5 py-2 bg-white/20 rounded-full font-medium text-sm active" data-filter="all">All</button>
+    <button class="filter-btn px-5 py-2 bg-white/20 rounded-full font-medium text-sm" data-filter="active">Active</button>
+    <button class="filter-btn px-5 py-2 bg-white/20 rounded-full font-medium text-sm" data-filter="completed">Completed</button>
+  </div>
+
+  <!-- Orders List -->
+  <main class="px-5 pb-20 space-y-6">
+
+    <!-- Example Order 1 - Active / On the way -->
+    <div class="glass rounded-3xl p-6 order-card" data-status="ontheway" data-category="active">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <p class="text-sm text-blue-200">Order #GF-20260228-7842</p>
+          <p class="text-base font-semibold mt-1">Feb 28, 2026 • 12:15 AM</p>
+        </div>
+        <span class="status-ontheway px-4 py-1 rounded-full text-xs font-bold">On the way</span>
+      </div>
+
+      <div class="flex justify-between text-sm mb-4">
+        <span>3 items • Tower 1 – Floor 4, Room 412</span>
+        <span class="font-bold">GHC 95</span>
+      </div>
+
+      <div class="flex gap-3 mt-4">
+        <button 
+          class="flex-1 bg-white/20 hover:bg-white/30 py-3 rounded-2xl font-medium active:scale-95 transition"
+          onclick="reorder(7842)"
+        >
+          <i class="fas fa-redo-alt mr-2"></i> Reorder
+        </button>
+        <button 
+          class="flex-1 bg-blue-600/80 hover:bg-blue-600 py-3 rounded-2xl font-medium active:scale-95 transition"
+          onclick="viewOrder(7842)"
+        >
+          <i class="fas fa-eye mr-2"></i> View Details
+        </button>
+      </div>
+    </div>
+
+    <!-- Example Order 2 - Delivered -->
+    <div class="glass rounded-3xl p-6 order-card" data-status="delivered" data-category="completed">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <p class="text-sm text-blue-200">Order #GF-20260227-6519</p>
+          <p class="text-base font-semibold mt-1">Feb 27, 2026 • 7:45 PM</p>
+        </div>
+        <span class="status-delivered px-4 py-1 rounded-full text-xs font-bold">Delivered</span>
+      </div>
+
+      <div class="flex justify-between text-sm mb-4">
+        <span>2 items • Tower 1 – Cafeteria</span>
+        <span class="font-bold">GHC 68</span>
+      </div>
+
+      <div class="flex gap-3 mt-4">
+        <button 
+          class="flex-1 bg-white/20 hover:bg-white/30 py-3 rounded-2xl font-medium active:scale-95 transition"
+          onclick="reorder(6519)"
+        >
+          <i class="fas fa-redo-alt mr-2"></i> Reorder
+        </button>
+        <button 
+          class="flex-1 bg-blue-600/80 hover:bg-blue-600 py-3 rounded-2xl font-medium active:scale-95 transition"
+          onclick="viewOrder(6519)"
+        >
+          <i class="fas fa-eye mr-2"></i> View Details
+        </button>
+      </div>
+    </div>
+
+    <!-- Example Order 3 - Cancelled -->
+    <div class="glass rounded-3xl p-6 order-card" data-status="cancelled" data-category="completed">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <p class="text-sm text-blue-200">Order #GF-20260226-3921</p>
+          <p class="text-base font-semibold mt-1">Feb 26, 2026 • 1:20 PM</p>
+        </div>
+        <span class="status-cancelled px-4 py-1 rounded-full text-xs font-bold">Cancelled</span>
+      </div>
+
+      <div class="flex justify-between text-sm mb-4">
+        <span>1 item • Tower 1 – Floor 3</span>
+        <span class="font-bold">GHC 45</span>
+      </div>
+
+      <div class="flex gap-3 mt-4">
+        <button 
+          class="flex-1 bg-white/20 hover:bg-white/30 py-3 rounded-2xl font-medium active:scale-95 transition"
+          onclick="reorder(3921)"
+        >
+          <i class="fas fa-redo-alt mr-2"></i> Reorder
+        </button>
+        <button 
+          class="flex-1 bg-blue-600/80 hover:bg-blue-600 py-3 rounded-2xl font-medium active:scale-95 transition"
+          onclick="viewOrder(3921)"
+        >
+          <i class="fas fa-eye mr-2"></i> View Details
+        </button>
+      </div>
+    </div>
+
+    <!-- No orders placeholder -->
+    <div id="no-orders" class="hidden text-center py-20">
+      <i class="fas fa-history text-8xl text-white/30 mb-6 block"></i>
+      <h2 class="text-2xl font-bold mb-3">No orders yet</h2>
+      <p class="text-blue-200 mb-8">Start ordering your favorite foods!</p>
+      <a href="home.html" class="inline-block bg-white text-blue-900 px-8 py-4 rounded-2xl font-bold shadow-lg">
+        Browse Vendors
+      </a>
+    </div>
+
+  </main>
+
+  <script>
+    // Fake orders data (in real app → from backend or localStorage)
+    const orders = [
+      { id: 7842, status: 'ontheway', category: 'active', date: 'Feb 28, 2026 12:15 AM', total: 95, items: 3, location: 'Tower 1 – Floor 4, Room 412' },
+      { id: 6519, status: 'delivered', category: 'completed', date: 'Feb 27, 2026 7:45 PM', total: 68, items: 2, location: 'Tower 1 – Cafeteria' },
+      { id: 3921, status: 'cancelled', category: 'completed', date: 'Feb 26, 2026 1:20 PM', total: 45, items: 1, location: 'Tower 1 – Floor 3' }
+    ];
+
+    const ordersContainer = document.querySelector('main');
+    const noOrdersMsg = document.getElementById('no-orders');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    function renderOrders(filter = 'all') {
+      const visibleOrders = filter === 'all' 
+        ? orders 
+        : orders.filter(o => o.category === filter || (filter === 'active' && o.category === 'active'));
+
+      ordersContainer.querySelectorAll('.order-card').forEach(card => card.remove());
+
+      if (visibleOrders.length === 0) {
+        noOrdersMsg.classList.remove('hidden');
+        return;
+      }
+
+      noOrdersMsg.classList.add('hidden');
+
+      visibleOrders.forEach(order => {
+        const card = document.createElement('div');
+        card.className = `glass rounded-3xl p-6 order-card`;
+        card.dataset.status = order.status;
+        card.dataset.category = order.category;
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <p class="text-sm text-blue-200">Order #GF-20260228-${order.id}</p>
+              <p class="text-base font-semibold mt-1">${order.date}</p>
+            </div>
+            <span class="status-${order.status} px-4 py-1 rounded-full text-xs font-bold capitalize">
+              ${order.status.replace('ontheway', 'On the way')}
+            </span>
+          </div>
+
+          <div class="flex justify-between text-sm mb-4">
+            <span>${order.items} items • ${order.location}</span>
+            <span class="font-bold">GHC ${order.total}</span>
+          </div>
+
+          <div class="flex gap-3 mt-4">
+            <button 
+              class="flex-1 bg-white/20 hover:bg-white/30 py-3 rounded-2xl font-medium active:scale-95 transition"
+              onclick="reorder(${order.id})"
+            >
+              <i class="fas fa-redo-alt mr-2"></i> Reorder
+            </button>
+            <button 
+              class="flex-1 bg-blue-600/80 hover:bg-blue-600 py-3 rounded-2xl font-medium active:scale-95 transition"
+              onclick="viewOrder(${order.id})"
+            >
+              <i class="fas fa-eye mr-2"></i> View Details
+            </button>
+          </div>
+        `;
+        ordersContainer.appendChild(card);
+      });
+    }
+
+    // Filter tabs functionality
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active', 'bg-white/40'));
+        btn.classList.add('active', 'bg-white/40');
+        renderOrders(btn.dataset.filter);
+      });
+    });
+
+    // Action functions (demo)
+    function reorder(orderId) {
+      alert(`Reordering items from order #${orderId}\n\n(In real app: items added back to cart)`);
+      // In real app → copy items to cart, redirect to cart.html
+    }
+
+    function viewOrder(orderId) {
+      alert(`Viewing details of order #${orderId}\n\nWould open detailed order page`);
+      // In real app → window.location.href = `/order/${orderId}`;
+    }
+
+    // Initial render
+    renderOrders('all');
+  </script>
+
+</body>
+</html>

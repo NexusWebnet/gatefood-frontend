@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Vendor Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .status-pending   { background: #f59e0b; color: white; }
+    .status-confirmed { background: #3b82f6; color: white; }
+    .status-ontheway  { background: #8b5cf6; color: white; }
+    .status-delivered { background: #10b981; color: white; }
+    .status-cancelled { background: #ef4444; color: white; }
+    #toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      transition: all 0.4s ease;
+    }
+    .toast-show { opacity: 1; transform: translate(-50%, 0); }
+    .toast-hide { opacity: 0; transform: translate(-50%, -20px); }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden glass px-6 py-4 rounded-2xl shadow-2xl text-center font-medium text-lg"></div>
+
+  <!-- Header / Shop Info -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="px-5 py-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-bold">Aunty Mansa Kitchen</h1>
+        <p class="text-blue-200 text-sm">Near main gate • Open</p>
+      </div>
+      <a href="vendor-login.html" class="text-white/80 hover:text-white text-sm flex items-center gap-2">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </header>
+
+  <!-- Quick Stats -->
+  <section class="px-5 pt-6 pb-4 grid grid-cols-2 gap-4">
+    <div class="glass rounded-3xl p-5 text-center">
+      <p class="text-blue-200 text-sm mb-1">Today's Orders</p>
+      <p id="today-orders" class="text-4xl font-bold">7</p>
+      <p class="text-green-400 text-sm mt-1">+<span id="new-today">3</span> new today</p>
+    </div>
+    <div class="glass rounded-3xl p-5 text-center">
+      <p class="text-blue-200 text-sm mb-1">Today's Sales</p>
+      <p id="today-sales" class="text-4xl font-bold">GHC 420</p>
+      <p class="text-green-400 text-sm mt-1">↑ 18% from yesterday</p>
+    </div>
+  </section>
+
+  <!-- Navigation Links -->
+  <section class="px-5 py-4 flex gap-4 overflow-x-auto">
+    <a href="vendor-menu.html" class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-2xl font-medium flex items-center gap-2 min-w-[140px] justify-center active:scale-95 transition">
+      <i class="fas fa-utensils"></i> My Menu
+    </a>
+    <a href="vendor-orders.html" class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-2xl font-medium flex items-center gap-2 min-w-[140px] justify-center active:scale-95 transition">
+      <i class="fas fa-list"></i> All Orders
+    </a>
+    <button onclick="simulateNewOrder()" class="bg-green-600/70 hover:bg-green-600 px-6 py-3 rounded-2xl font-medium flex items-center gap-2 min-w-[140px] justify-center active:scale-95 transition">
+      <i class="fas fa-sync-alt"></i> Refresh
+    </button>
+  </section>
+
+  <!-- Recent Orders -->
+  <section class="px-5 py-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold">Recent Orders</h2>
+      <a href="vendor-orders.html" class="text-blue-300 hover:text-blue-200 text-sm flex items-center gap-1">
+        View All <i class="fas fa-arrow-right text-xs"></i>
+      </a>
+    </div>
+
+    <div id="orders-list" class="space-y-5"></div>
+  </section>
+
+  <script>
+    // Simulated orders data (in real app → fetched from backend)
+    let orders = [
+      {
+        id: 7842,
+        status: 'ontheway',
+        date: 'Today, 12:15 AM',
+        customer: 'Charles (024 123 4567)',
+        items: 3,
+        total: 95,
+        location: 'Tower 1 – Floor 4, Room 412',
+        itemsList: 'Waakye, Jollof, Banku'
+      },
+      {
+        id: 7841,
+        status: 'pending',
+        date: 'Today, 11:40 PM',
+        customer: 'Ama (055 987 6543)',
+        items: 2,
+        total: 60,
+        location: 'Tower 1 – Cafeteria',
+        itemsList: 'Kenkey & Fish, Plantain'
+      },
+      {
+        id: 7839,
+        status: 'delivered',
+        date: 'Today, 6:30 PM',
+        customer: 'Kofi (027 111 2222)',
+        items: 1,
+        total: 35,
+        location: 'Tower 1 – Floor 2',
+        itemsList: 'Jollof Rice'
+      }
+    ];
+
+    const ordersList = document.getElementById('orders-list');
+    const todayOrdersEl = document.getElementById('today-orders');
+    const newTodayEl = document.getElementById('new-today');
+    const todaySalesEl = document.getElementById('today-sales');
+    const toast = document.getElementById('toast');
+
+    function showToast(message, type = 'success') {
+      toast.textContent = message;
+      toast.className = `glass px-6 py-4 rounded-2xl shadow-2xl text-center font-medium text-lg ${type === 'success' ? 'bg-green-600/80' : 'bg-red-600/80'}`;
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-show');
+
+      setTimeout(() => {
+        toast.classList.remove('toast-show');
+        toast.classList.add('toast-hide');
+        setTimeout(() => toast.classList.add('hidden'), 400);
+      }, 3000);
+    }
+
+    function renderOrders() {
+      ordersList.innerHTML = '';
+
+      if (orders.length === 0) {
+        ordersList.innerHTML = `
+          <div class="text-center py-12 text-blue-200">
+            <i class="fas fa-inbox text-6xl mb-4 block opacity-50"></i>
+            <p class="text-xl">No recent orders yet</p>
+          </div>
+        `;
+        todayOrdersEl.textContent = '0';
+        newTodayEl.textContent = '0';
+        todaySalesEl.textContent = 'GHC 0';
+        return;
+      }
+
+      let todayTotal = 0;
+      let todayCount = 0;
+
+      orders.forEach(order => {
+        // Assume all are "today" for demo
+        todayTotal += order.total;
+        todayCount++;
+
+        const card = document.createElement('div');
+        card.className = 'glass rounded-3xl p-5';
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <p class="text-sm text-blue-200">Order #GF-${order.id}</p>
+              <p class="font-medium">${order.date}</p>
+            </div>
+            <span class="status-${order.status} px-4 py-1 rounded-full text-xs font-bold capitalize">
+              ${order.status === 'ontheway' ? 'On the way' : order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+            </span>
+          </div>
+
+          <div class="text-sm mb-4 space-y-1">
+            <p><strong>Customer:</strong> ${order.customer}</p>
+            <p><strong>Items:</strong> ${order.items} (${order.itemsList})</p>
+            <p><strong>Total:</strong> GHC ${order.total}</p>
+            <p><strong>Delivery:</strong> ${order.location}</p>
+          </div>
+
+          <div class="flex gap-3">
+            ${order.status === 'pending' ? `
+              <button class="flex-1 bg-blue-600/80 hover:bg-blue-600 py-3 rounded-2xl font-medium active:scale-95 transition confirm-btn" data-id="${order.id}">
+                Confirm Order
+              </button>
+              <button class="flex-1 bg-red-600/70 hover:bg-red-600 py-3 rounded-2xl font-medium active:scale-95 transition cancel-btn" data-id="${order.id}">
+                Cancel
+              </button>
+            ` : ''}
+            ${order.status === 'confirmed' || order.status === 'ontheway' ? `
+              <button class="flex-1 bg-green-600/80 hover:bg-green-600 py-3 rounded-2xl font-medium active:scale-95 transition deliver-btn" data-id="${order.id}">
+                Mark Delivered
+              </button>
+            ` : ''}
+          </div>
+        `;
+        ordersList.appendChild(card);
+      });
+
+      // Update stats
+      todayOrdersEl.textContent = todayCount;
+      newTodayEl.textContent = todayCount - 4; // fake "new" count
+      todaySalesEl.textContent = `GHC ${todayTotal}`;
+    }
+
+    // Event delegation for action buttons
+    ordersList.addEventListener('click', (e) => {
+      const target = e.target;
+
+      if (target.classList.contains('confirm-btn')) {
+        const id = parseInt(target.dataset.id);
+        const order = orders.find(o => o.id === id);
+        if (order) {
+          order.status = 'confirmed';
+          showToast('Order Confirmed!', 'success');
+          renderOrders();
+        }
+      }
+
+      if (target.classList.contains('deliver-btn')) {
+        const id = parseInt(target.dataset.id);
+        const order = orders.find(o => o.id === id);
+        if (order) {
+          order.status = 'delivered';
+          showToast('Marked as Delivered!', 'success');
+          renderOrders();
+        }
+      }
+
+      if (target.classList.contains('cancel-btn')) {
+        const id = parseInt(target.dataset.id);
+        const order = orders.find(o => o.id === id);
+        if (order) {
+          order.status = 'cancelled';
+          showToast('Order Cancelled', 'error');
+          renderOrders();
+        }
+      }
+    });
+
+    // Simulate new order (for demo "Refresh" button)
+    function simulateNewOrder() {
+      const newOrder = {
+        id: Math.floor(Math.random() * 10000) + 7000,
+        status: 'pending',
+        date: 'Just now',
+        customer: 'New Customer (054 555 6666)',
+        items: Math.floor(Math.random() * 3) + 1,
+        total: Math.floor(Math.random() * 80) + 30,
+        location: 'Tower 1 – Cafeteria',
+        itemsList: 'Waakye & Stew'
+      };
+      orders.unshift(newOrder); // add to top
+      showToast('New order received!', 'success');
+      renderOrders();
+    }
+
+    // Initial render
+    renderOrders();
+  </script>
+
+</body>
+</html>

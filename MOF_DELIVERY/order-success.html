@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Order Confirmed!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .success-icon {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="flex items-center justify-between px-5 py-4">
+      <a href="home.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Home
+      </a>
+      <h1 class="text-xl font-bold">Order Placed</h1>
+      <div class="w-8"></div>
+    </div>
+  </header>
+
+  <!-- Main Success Content -->
+  <main class="flex-1 flex flex-col items-center justify-center px-5 py-10 text-center">
+
+    <!-- Success Icon -->
+    <div class="mb-8">
+      <div class="w-32 h-32 mx-auto bg-green-500/20 rounded-full flex items-center justify-center border-4 border-green-400/40 success-icon">
+        <i class="fas fa-check-circle text-7xl text-green-400"></i>
+      </div>
+    </div>
+
+    <h1 class="text-4xl font-bold mb-3">Order Confirmed!</h1>
+    <p class="text-xl text-green-300 mb-8">Thank you for your order</p>
+
+    <!-- Order Details Card -->
+    <div class="glass rounded-3xl p-7 w-full max-w-md mb-10">
+      <div class="space-y-4 text-left">
+        <div class="flex justify-between text-lg">
+          <span class="text-blue-200">Order ID:</span>
+          <span class="font-bold">#GF-20260228-7842</span>
+        </div>
+        <div class="flex justify-between text-lg">
+          <span class="text-blue-200">Estimated Delivery:</span>
+          <span class="font-bold">25–35 minutes</span>
+        </div>
+        <div class="flex justify-between text-lg">
+          <span class="text-blue-200">Total Amount:</span>
+          <span class="font-bold text-white">GHC 95</span>
+        </div>
+        <div class="border-t border-white/20 pt-4 mt-2">
+          <p class="text-blue-200 mb-1">Delivery to:</p>
+          <p class="font-medium">
+            Tower 1 – Floor 4, Room 412<br>
+            (Ask for Charles at the door)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- What Happens Next -->
+    <div class="glass rounded-3xl p-6 w-full max-w-md mb-10">
+      <h2 class="text-2xl font-bold mb-4">What Happens Next?</h2>
+      <ul class="space-y-4 text-left text-blue-100">
+        <li class="flex items-start gap-3">
+          <i class="fas fa-utensils text-green-400 mt-1 text-xl"></i>
+          <span>Your vendor is preparing your food right now.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i class="fas fa-phone-volume text-green-400 mt-1 text-xl"></i>
+          <span>You’ll get a call/message when it’s on the way.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i class="fas fa-hand-holding-usd text-green-400 mt-1 text-xl"></i>
+          <span>Pay cash on delivery when the food arrives.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col gap-4 w-full max-w-md">
+      <a href="my-orders.html" class="bg-white text-blue-900 py-4 rounded-2xl font-bold text-lg shadow-xl flex items-center justify-center gap-3 active:scale-95 transition transform">
+        <i class="fas fa-list-ul"></i>
+        View My Orders
+      </a>
+      <a href="home.html" class="bg-blue-600/80 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg shadow-xl flex items-center justify-center gap-3 active:scale-95 transition transform">
+        <i class="fas fa-shopping-bag"></i>
+        Continue Shopping
+      </a>
+    </div>
+
+  </main>
+
+</body>
+</html>

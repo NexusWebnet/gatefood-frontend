@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Earnings & Reports</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .period-btn.active {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: white;
+    }
+    .bar {
+      height: 8px;
+      background: rgba(59, 130, 246, 0.6);
+      border-radius: 9999px;
+      transition: width 0.6s ease;
+    }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="px-5 py-4 flex justify-between items-center">
+      <a href="vendor-dashboard.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+      <h1 class="text-xl font-bold">Earnings</h1>
+      <div class="w-8"></div>
+    </div>
+  </header>
+
+  <!-- Period Tabs -->
+  <section class="px-5 pt-6 pb-2 flex gap-3 overflow-x-auto">
+    <button class="period-btn px-6 py-2.5 bg-white/15 border border-white/30 rounded-full font-medium text-sm active" data-period="daily">Daily</button>
+    <button class="period-btn px-6 py-2.5 bg-white/15 border border-white/30 rounded-full font-medium text-sm" data-period="weekly">Weekly</button>
+    <button class="period-btn px-6 py-2.5 bg-white/15 border border-white/30 rounded-full font-medium text-sm" data-period="monthly">Monthly</button>
+  </section>
+
+  <!-- Main Earnings Card -->
+  <section class="px-5 py-6">
+    <div class="glass rounded-3xl p-7 text-center">
+      <p id="period-title" class="text-blue-200 text-lg mb-2">Today's Earnings</p>
+      <p id="total-sales" class="text-5xl font-bold mb-2">GHC 420</p>
+      <p id="order-count" class="text-xl text-green-400 mb-6">from 12 orders</p>
+
+      <div class="space-y-4 text-left text-sm">
+        <div class="flex justify-between">
+          <span>Average Order Value</span>
+          <span id="avg-order">GHC 35</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Orders Today</span>
+          <span id="today-orders">7</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Compared to yesterday</span>
+          <span class="text-green-400">+18%</span>
+        </div>
+      </div>
+
+      <!-- Fake progress bars for visual feel -->
+      <div class="mt-8 space-y-3">
+        <div>
+          <p class="text-sm text-blue-200 mb-1">Lunch Rush (12–3 PM)</p>
+          <div class="bg-white/10 rounded-full h-2 overflow-hidden">
+            <div class="bar w-[75%]" style="width:75%"></div>
+          </div>
+        </div>
+        <div>
+          <p class="text-sm text-blue-200 mb-1">Dinner Rush (6–9 PM)</p>
+          <div class="bg-white/10 rounded-full h-2 overflow-hidden">
+            <div class="bar w-[60%]" style="width:60%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Daily Breakdown (last 7 days) -->
+  <section class="px-5 py-6">
+    <h2 class="text-2xl font-bold mb-5">Last 7 Days Breakdown</h2>
+    <div id="breakdown-list" class="space-y-4"></div>
+  </section>
+
+  <script>
+    // Simulated earnings data (in real app → from backend)
+    const earningsData = {
+      daily: {
+        title: "Today's Earnings",
+        total: 420,
+        orders: 12,
+        avg: 35,
+        change: "+18%"
+      },
+      weekly: {
+        title: "This Week's Earnings",
+        total: 2850,
+        orders: 78,
+        avg: 36.5,
+        change: "+12%"
+      },
+      monthly: {
+        title: "This Month's Earnings",
+        total: 12450,
+        orders: 340,
+        avg: 36.6,
+        change: "+9%"
+      }
+    };
+
+    const dailyBreakdown = [
+      { date: "Today", sales: 420, orders: 12 },
+      { date: "Yesterday", sales: 355, orders: 10 },
+      { date: "Wed", sales: 480, orders: 14 },
+      { date: "Tue", sales: 310, orders: 9 },
+      { date: "Mon", sales: 390, orders: 11 },
+      { date: "Sun", sales: 520, orders: 15 },
+      { date: "Sat", sales: 615, orders: 17 }
+    ];
+
+    const periodTitle = document.getElementById('period-title');
+    const totalSales = document.getElementById('total-sales');
+    const orderCount = document.getElementById('order-count');
+    const avgOrder = document.getElementById('avg-order');
+    const changeEl = document.querySelector('[data-change]');
+    const breakdownList = document.getElementById('breakdown-list');
+
+    const periodButtons = document.querySelectorAll('.period-btn');
+
+    function updateEarnings(period) {
+      const data = earningsData[period];
+      periodTitle.textContent = data.title;
+      totalSales.textContent = `GHC ${data.total}`;
+      orderCount.textContent = `${data.orders} orders`;
+      avgOrder.textContent = `GHC ${data.avg}`;
+      // changeEl.textContent = data.change; // if you want dynamic change display
+    }
+
+    function renderBreakdown() {
+      breakdownList.innerHTML = '';
+      dailyBreakdown.forEach(day => {
+        const item = document.createElement('div');
+        item.className = 'glass rounded-2xl p-4 flex justify-between items-center';
+        item.innerHTML = `
+          <div>
+            <p class="font-medium">${day.date}</p>
+            <p class="text-sm text-blue-200">${day.orders} orders</p>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-lg">GHC ${day.sales}</p>
+            <div class="bg-white/10 rounded-full h-2 w-24 mt-2 overflow-hidden">
+              <div class="bg-green-500 h-full" style="width: ${Math.min((day.sales / 700) * 100, 100)}%"></div>
+            </div>
+          </div>
+        `;
+        breakdownList.appendChild(item);
+      });
+    }
+
+    // Tab switching
+    periodButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        periodButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const period = btn.dataset.period;
+        updateEarnings(period);
+      });
+    });
+
+    // Initial load
+    updateEarnings('daily');
+    renderBreakdown();
+  </script>
+
+</body>
+</html>

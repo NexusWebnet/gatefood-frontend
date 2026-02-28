@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - My Menu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .menu-item {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.2s ease;
+    }
+    .menu-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    }
+    #toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      transition: all 0.4s ease;
+    }
+    .toast-show { opacity: 1; transform: translate(-50%, 0); }
+    .toast-hide { opacity: 0; transform: translate(-50%, -20px); }
+    #preview-img { max-height: 120px; object-fit: cover; border-radius: 0.75rem; }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen pb-24">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="px-5 py-4 flex justify-between items-center">
+      <a href="dashboard.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+      <h1 class="text-xl font-bold">My Menu</h1>
+      <div class="w-8"></div>
+    </div>
+  </header>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden glass px-6 py-4 rounded-2xl shadow-2xl text-center font-medium text-lg"></div>
+
+  <!-- Add / Edit Form (hidden by default) -->
+  <section id="menu-form" class="hidden px-5 pt-6 pb-8">
+    <div class="glass rounded-3xl p-6">
+      <h2 id="form-title" class="text-2xl font-bold mb-5">Add New Item</h2>
+      <form id="itemForm" class="space-y-5">
+        <input type="hidden" id="editId" value="">
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">Food Name</label>
+          <input type="text" id="name" required placeholder="e.g. Waakye with Stew" class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/50 focus:bg-white/15 transition-all outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">Price (GHC)</label>
+          <input type="number" id="price" required step="0.01" min="1" placeholder="25.00" class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/50 focus:bg-white/15 transition-all outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">Description</label>
+          <textarea id="description" rows="3" placeholder="Classic waakye with stewed meat, plantain, egg & shito" class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/50 focus:bg-white/15 transition-all outline-none"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-white/90 text-sm font-medium mb-2">Photo</label>
+          <input type="file" id="photo" accept="image/*" class="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-2xl text-white file:bg-white/20 file:border-0 file:rounded-lg file:px-4 file:py-2 file:text-white cursor-pointer" />
+          <div id="preview-container" class="mt-3 hidden">
+            <img id="preview-img" src="" alt="Preview" />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <input type="checkbox" id="available" checked class="w-5 h-5 rounded border-white/40" />
+          <label for="available" class="text-white/90">Available for order</label>
+        </div>
+
+        <div class="flex gap-4 pt-4">
+          <button type="submit" class="flex-1 bg-green-600/80 hover:bg-green-600 py-4 rounded-2xl font-bold text-lg active:scale-95 transition">
+            Save Item
+          </button>
+          <button type="button" id="cancelEdit" class="flex-1 bg-red-600/70 hover:bg-red-600 py-4 rounded-2xl font-bold text-lg active:scale-95 transition">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Menu Items List -->
+  <section class="px-5 py-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold">Your Menu Items</h2>
+      <button id="addNewBtn" class="bg-green-600/80 hover:bg-green-600 px-6 py-3 rounded-2xl font-medium flex items-center gap-2 active:scale-95 transition">
+        <i class="fas fa-plus"></i> Add New
+      </button>
+    </div>
+
+    <div id="menu-list" class="space-y-6"></div>
+
+    <div id="no-items" class="hidden text-center py-16 text-blue-200">
+      <i class="fas fa-utensils text-7xl mb-6 block opacity-50"></i>
+      <p class="text-xl font-medium">No menu items yet</p>
+      <p class="mt-2 mb-6">Add your first food item to start receiving orders!</p>
+      <button id="addFirstBtn" class="bg-white text-blue-900 px-8 py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">
+        Add First Item
+      </button>
+    </div>
+  </section>
+
+  <script>
+    // Simulated menu data (in real app → from backend)
+    let menuItems = [
+      {
+        id: 1,
+        name: "Waakye with Stew",
+        price: 25,
+        description: "Classic waakye, stewed meat, plantain, egg, spaghetti & shito sauce",
+        photo: "https://thumbs.dreamstime.com/z/vibrant-hearty-plate-traditional-ghanaian-waakye-featuring-reddish-brown-rice-cooked-millet-leaves-black-eyed-peas-418375241.jpg",
+        available: true
+      },
+      {
+        id: 2,
+        name: "Party Jollof Rice",
+        price: 35,
+        description: "Smoky jollof with grilled chicken, fried plantain & salad",
+        photo: "https://thumbs.dreamstime.com/b/nigerian-jollof-rice-traditional-west-african-dish-served-fried-chicken-plantain-delicious-party-food-sweet-413340146.jpg",
+        available: true
+      },
+      {
+        id: 3,
+        name: "Banku & Grilled Tilapia",
+        price: 45,
+        description: "Fresh grilled tilapia with pepper sauce, banku & side veggies",
+        photo: "https://miro.medium.com/0*kvXYnDtTW5lyiJMv",
+        available: false
+      }
+    ];
+
+    const menuList = document.getElementById('menu-list');
+    const noItemsMsg = document.getElementById('no-items');
+    const formSection = document.getElementById('menu-form');
+    const formTitle = document.getElementById('form-title');
+    const itemForm = document.getElementById('itemForm');
+    const editIdInput = document.getElementById('editId');
+    const nameInput = document.getElementById('name');
+    const priceInput = document.getElementById('price');
+    const descInput = document.getElementById('description');
+    const photoInput = document.getElementById('photo');
+    const availableCheckbox = document.getElementById('available');
+    const previewImg = document.getElementById('preview-img');
+    const previewContainer = document.getElementById('preview-container');
+    const cancelBtn = document.getElementById('cancelEdit');
+    const toast = document.getElementById('toast');
+
+    function showToast(message, type = 'success') {
+      toast.textContent = message;
+      toast.className = `glass px-6 py-4 rounded-2xl shadow-2xl text-center font-medium text-lg ${type === 'success' ? 'bg-green-600/80' : 'bg-red-600/80'}`;
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-show');
+      setTimeout(() => {
+        toast.classList.remove('toast-show');
+        setTimeout(() => toast.classList.add('hidden'), 400);
+      }, 3000);
+    }
+
+    function renderMenu() {
+      menuList.innerHTML = '';
+
+      if (menuItems.length === 0) {
+        noItemsMsg.classList.remove('hidden');
+        return;
+      }
+
+      noItemsMsg.classList.add('hidden');
+
+      menuItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'menu-item rounded-3xl overflow-hidden';
+        card.innerHTML = `
+          <div class="h-44 bg-cover bg-center" style="background-image: url('${item.photo}');"></div>
+          <div class="p-5">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-lg font-semibold">${item.name}</h3>
+              <span class="bg-blue-600/80 px-3 py-1 rounded-full text-sm font-bold">GHC ${item.price}</span>
+            </div>
+            <p class="text-blue-100 text-sm mb-4">${item.description}</p>
+            <div class="flex items-center justify-between">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" ${item.available ? 'checked' : ''} class="w-5 h-5 rounded border-white/40 toggle-available" data-id="${item.id}" />
+                <span class="text-sm ${item.available ? 'text-green-400' : 'text-red-400'}">
+                  ${item.available ? 'Available' : 'Unavailable'}
+                </span>
+              </label>
+              <div class="flex gap-3">
+                <button class="text-blue-300 hover:text-blue-200 edit-btn" data-id="${item.id}">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-300 hover:text-red-200 delete-btn" data-id="${item.id}">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        menuList.appendChild(card);
+      });
+    }
+
+    // Show add form
+    document.getElementById('addNewBtn').addEventListener('click', () => showForm('add'));
+    document.getElementById('addFirstBtn').addEventListener('click', () => showForm('add'));
+
+    function showForm(mode, item = null) {
+      formSection.classList.remove('hidden');
+      window.scrollTo({ top: formSection.offsetTop - 80, behavior: 'smooth' });
+
+      if (mode === 'add') {
+        formTitle.textContent = 'Add New Item';
+        itemForm.reset();
+        editIdInput.value = '';
+        previewContainer.classList.add('hidden');
+        previewImg.src = '';
+      } else if (mode === 'edit' && item) {
+        formTitle.textContent = 'Edit Item';
+        editIdInput.value = item.id;
+        nameInput.value = item.name;
+        priceInput.value = item.price;
+        descInput.value = item.description;
+        availableCheckbox.checked = item.available;
+        if (item.photo) {
+          previewImg.src = item.photo;
+          previewContainer.classList.remove('hidden');
+        } else {
+          previewContainer.classList.add('hidden');
+        }
+      }
+    }
+
+    // Cancel edit/add
+    cancelBtn.addEventListener('click', () => {
+      formSection.classList.add('hidden');
+      itemForm.reset();
+      previewContainer.classList.add('hidden');
+    });
+
+    // Photo preview
+    photoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          previewImg.src = ev.target.result;
+          previewContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Form submit (add or edit)
+    itemForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const id = editIdInput.value ? parseInt(editIdInput.value) : Date.now();
+      const name = nameInput.value.trim();
+      const price = parseFloat(priceInput.value);
+      const description = descInput.value.trim();
+      const available = availableCheckbox.checked;
+      const photo = previewImg.src || ''; // base64 for demo (real app → upload to server)
+
+      if (!name || isNaN(price) || price <= 0) {
+        showToast('Please fill name and valid price', 'error');
+        return;
+      }
+
+      if (editIdInput.value) {
+        // Edit
+        const item = menuItems.find(i => i.id === id);
+        if (item) {
+          item.name = name;
+          item.price = price;
+          item.description = description;
+          item.available = available;
+          item.photo = photo;
+          showToast('Item updated successfully!', 'success');
+        }
+      } else {
+        // Add new
+        menuItems.push({
+          id,
+          name,
+          price,
+          description,
+          available,
+          photo
+        });
+        showToast('New item added!', 'success');
+      }
+
+      formSection.classList.add('hidden');
+      itemForm.reset();
+      previewContainer.classList.add('hidden');
+      renderMenu();
+    });
+
+    // Event delegation for list actions
+    menuList.addEventListener('click', (e) => {
+      const target = e.target;
+
+      // Toggle availability
+      if (target.classList.contains('toggle-available')) {
+        const id = parseInt(target.dataset.id);
+        const item = menuItems.find(i => i.id === id);
+        if (item) {
+          item.available = target.checked;
+          showToast(`Item now ${item.available ? 'available' : 'unavailable'}`, 'success');
+          renderMenu();
+        }
+      }
+
+      // Edit
+      if (target.closest('.edit-btn')) {
+        const btn = target.closest('.edit-btn');
+        const id = parseInt(btn.dataset.id);
+        const item = menuItems.find(i => i.id === id);
+        if (item) showForm('edit', item);
+      }
+
+      // Delete
+      if (target.closest('.delete-btn')) {
+        const btn = target.closest('.delete-btn');
+        const id = parseInt(btn.dataset.id);
+        if (confirm('Delete this item permanently?')) {
+          menuItems = menuItems.filter(i => i.id !== id);
+          showToast('Item deleted', 'success');
+          renderMenu();
+        }
+      }
+    });
+
+    // Initial render
+    renderMenu();
+  </script>
+
+</body>
+</html>

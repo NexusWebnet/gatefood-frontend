@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Your Cart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    .cart-item {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.2s ease;
+    }
+    .cart-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .total-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+    }
+    .disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white min-h-screen pb-32">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-gradient-to-b from-blue-950/90 to-transparent backdrop-blur-md">
+    <div class="flex items-center justify-between px-5 py-4">
+      <a href="menu-vendor.html" class="text-white flex items-center gap-2 text-lg font-medium">
+        <i class="fas fa-arrow-left"></i> Back
+      </a>
+      <h1 class="text-xl font-bold">Your Cart</h1>
+      <div class="w-8"></div>
+    </div>
+  </header>
+
+  <!-- Cart Content -->
+  <main class="px-5 pt-4">
+    <div id="cart-items" class="space-y-6"></div>
+
+    <!-- Empty cart message (shown when cart is empty) -->
+    <div id="empty-cart" class="hidden text-center py-20">
+      <i class="fas fa-shopping-cart text-8xl text-white/30 mb-6 block"></i>
+      <h2 class="text-2xl font-bold mb-3">Your cart is empty</h2>
+      <p class="text-blue-200 mb-8">Add some tasty food from your favorite vendors!</p>
+      <a href="home.html" class="inline-block bg-white text-blue-900 px-8 py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">
+        Browse Vendors
+      </a>
+    </div>
+  </main>
+
+  <!-- Floating Total & Checkout Bar -->
+  <div id="total-bar" class="fixed bottom-0 left-0 right-0 total-bar py-5 px-5 shadow-2xl z-30 hidden">
+    <div class="max-w-md mx-auto">
+      <div class="flex justify-between mb-2 text-base">
+        <span>Subtotal</span>
+        <span id="subtotal">GHC 0</span>
+      </div>
+      <div class="flex justify-between mb-2 text-base">
+        <span>Delivery Fee</span>
+        <span id="delivery">GHC 10</span>
+      </div>
+      <div class="flex justify-between text-xl font-bold border-t border-white/20 pt-3">
+        <span>Total</span>
+        <span id="total">GHC 10</span>
+      </div>
+
+      <button id="checkout-btn" class="w-full bg-white text-blue-900 py-4 mt-5 rounded-2xl font-bold text-lg shadow-xl flex items-center justify-center gap-3 active:scale-95 transition transform disabled:opacity-60 disabled:cursor-not-allowed">
+        <i class="fas fa-arrow-right"></i>
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Cart data structure (example format)
+    let cart = [
+      {
+        id: 1,
+        name: "Waakye with Stew",
+        price: 25,
+        quantity: 2,
+        vendor: "Aunty Mansa Kitchen",
+        image: "https://thumbs.dreamstime.com/z/vibrant-hearty-plate-traditional-ghanaian-waakye-featuring-reddish-brown-rice-cooked-millet-leaves-black-eyed-peas-418375241.jpg"
+      },
+      {
+        id: 2,
+        name: "Party Jollof Rice",
+        price: 35,
+        quantity: 1,
+        vendor: "Brother Joe's Chop Bar",
+        image: "https://thumbs.dreamstime.com/b/nigerian-jollof-rice-traditional-west-african-dish-served-fried-chicken-plantain-delicious-party-food-sweet-413340146.jpg"
+      }
+    ];
+
+    // In real app you would load from localStorage
+    // For prototype we use the array above
+    // To make it persistent:
+    // cart = JSON.parse(localStorage.getItem('gatefood_cart')) || [];
+
+    const cartItemsContainer = document.getElementById('cart-items');
+    const emptyCartMsg = document.getElementById('empty-cart');
+    const totalBar = document.getElementById('total-bar');
+    const subtotalEl = document.getElementById('subtotal');
+    const deliveryEl = document.getElementById('delivery');
+    const totalEl = document.getElementById('total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    function renderCart() {
+      cartItemsContainer.innerHTML = '';
+
+      if (cart.length === 0) {
+        emptyCartMsg.classList.remove('hidden');
+        totalBar.classList.add('hidden');
+        return;
+      }
+
+      emptyCartMsg.classList.add('hidden');
+      totalBar.classList.remove('hidden');
+
+      let subtotal = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+
+        const itemElement = document.createElement('div');
+        itemElement.className = 'cart-item rounded-3xl overflow-hidden flex';
+        itemElement.innerHTML = `
+          <div class="w-28 h-28 flex-shrink-0 bg-cover bg-center" style="background-image: url('${item.image}');"></div>
+          <div class="flex-1 p-4 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-semibold">${item.name}</h3>
+              <p class="text-blue-200 text-sm">${item.vendor}</p>
+            </div>
+            <div class="flex items-center justify-between mt-2">
+              <span class="text-xl font-bold">GHC ${item.price}</span>
+              <div class="flex items-center gap-3 bg-white/10 rounded-full px-3 py-1.5">
+                <button class="decrease-qty text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30" data-id="${item.id}">-</button>
+                <span class="text-lg font-medium min-w-[2ch] text-center qty-display">${item.quantity}</span>
+                <button class="increase-qty text-xl w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30" data-id="${item.id}">+</button>
+              </div>
+            </div>
+            <button class="remove-item self-start mt-2 text-red-300 hover:text-red-200 text-sm flex items-center gap-1" data-id="${item.id}">
+              <i class="fas fa-trash-alt text-xs"></i> Remove
+            </button>
+          </div>
+        `;
+
+        cartItemsContainer.appendChild(itemElement);
+      });
+
+      // Update totals
+      const delivery = 10; // fixed for prototype
+      const total = subtotal + delivery;
+
+      subtotalEl.textContent = `GHC ${subtotal}`;
+      deliveryEl.textContent = `GHC ${delivery}`;
+      totalEl.textContent = `GHC ${total}`;
+
+      // Enable/disable checkout
+      checkoutBtn.disabled = cart.length === 0;
+      if (cart.length === 0) {
+        checkoutBtn.classList.add('disabled');
+      } else {
+        checkoutBtn.classList.remove('disabled');
+      }
+    }
+
+    // Event delegation for buttons
+    cartItemsContainer.addEventListener('click', (e) => {
+      const target = e.target;
+
+      // Increase quantity
+      if (target.classList.contains('increase-qty')) {
+        const id = parseInt(target.dataset.id);
+        const item = cart.find(i => i.id === id);
+        if (item) {
+          item.quantity++;
+          renderCart();
+        }
+      }
+
+      // Decrease quantity
+      if (target.classList.contains('decrease-qty')) {
+        const id = parseInt(target.dataset.id);
+        const item = cart.find(i => i.id === id);
+        if (item && item.quantity > 1) {
+          item.quantity--;
+          renderCart();
+        }
+      }
+
+      // Remove item
+      if (target.classList.contains('remove-item') || target.parentElement.classList.contains('remove-item')) {
+        const btn = target.classList.contains('remove-item') ? target : target.parentElement;
+        const id = parseInt(btn.dataset.id);
+        cart = cart.filter(i => i.id !== id);
+        renderCart();
+      }
+    });
+
+    // Checkout button (just alert for now)
+    checkoutBtn.addEventListener('click', () => {
+      if (cart.length > 0) {
+        alert('Proceeding to checkout!\n\nTotal: ' + totalEl.textContent + '\n\n(In real app → redirect to checkout page)');
+        // window.location.href = 'checkout.html';
+      }
+    });
+
+    // Initial render
+    renderCart();
+  </script>
+
+</body>
+</html>

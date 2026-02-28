@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GateFood - Food at Your Gate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    a, button { touch-action: manipulation; }
+    .bg-food-hero {
+      background-image: url('https://thumbs.dreamstime.com/b/delicious-spread-authentic-ghanaian-cuisine-served-wooden-table-vibrant-abundant-display-traditional-dishes-featuring-438013875.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .category-chip {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .category-chip.active {
+      background: white;
+      color: #1e40af;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .vendor-card {
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .vendor-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+    }
+    .status-open { color: #10b981; }
+    .status-closed { color: #ef4444; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-blue-900/95 backdrop-blur-md text-white shadow-md sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
+      <a href="home.html" class="text-2xl font-bold tracking-tight flex items-center gap-2">
+        <i class="fas fa-door-open"></i> GateFood
+      </a>
+      <div class="flex items-center gap-4 text-sm font-medium">
+        <a href="#" class="hover:text-blue-200 transition">Login</a>
+        <a href="#" class="bg-blue-600 hover:bg-blue-500 px-5 py-2.5 rounded-full transition shadow-sm">
+          Sign Up
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hello Section -->
+  <section class="bg-food-hero relative py-16 md:py-20 text-center px-5 text-white">
+    <div class="absolute inset-0 bg-black/55"></div>
+    <div class="relative z-10 max-w-md mx-auto">
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">Hello! 👋</h2>
+      <p class="text-lg md:text-xl font-light leading-relaxed mb-6 drop-shadow-md">
+        Welcome to GateFood – your building's favorite way to enjoy tasty local food without leaving your block.
+      </p>
+      <p class="text-base opacity-90 mb-8">
+        Fresh from nearby vendors • Delivered to Tower 1 (Office or Cafeteria) • Cash on arrival
+      </p>
+      <a href="#" class="inline-block bg-white text-blue-900 px-10 py-4 rounded-full font-bold text-lg shadow-2xl hover:bg-gray-100 active:scale-95 transition transform">
+        Start Ordering →
+      </a>
+    </div>
+  </section>
+
+  <!-- Category Section -->
+  <section class="px-5 py-6 bg-white/80 backdrop-blur-sm sticky top-[68px] z-10">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Categories</h2>
+    <div id="category-chips" class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      <button class="category-chip px-6 py-2.5 bg-blue-600 text-white rounded-full font-medium text-sm whitespace-nowrap active:scale-95 transition shadow-sm active" data-category="all">
+        All
+      </button>
+      <button class="category-chip px-6 py-2.5 bg-white border border-gray-300 text-gray-800 rounded-full font-medium text-sm whitespace-nowrap hover:bg-gray-100 active:scale-95 transition shadow-sm" data-category="breakfast">
+        Breakfast
+      </button>
+      <button class="category-chip px-6 py-2.5 bg-white border border-gray-300 text-gray-800 rounded-full font-medium text-sm whitespace-nowrap hover:bg-gray-100 active:scale-95 transition shadow-sm" data-category="lunch">
+        Lunch
+      </button>
+      <button class="category-chip px-6 py-2.5 bg-white border border-gray-300 text-gray-800 rounded-full font-medium text-sm whitespace-nowrap hover:bg-gray-100 active:scale-95 transition shadow-sm" data-category="dinner">
+        Dinner
+      </button>
+    </div>
+  </section>
+
+  <!-- Vendors Sections -->
+  <section class="px-5 py-8 space-y-12 bg-gradient-to-b from-white to-gray-100">
+
+    <!-- Breakfast Sellers -->
+    <div id="breakfast-section" class="vendor-group">
+      <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-3">
+        <i class="fas fa-coffee text-amber-600"></i> Breakfast Sellers
+      </h2>
+      <div class="space-y-6">
+        <a href="menu-vendor.html" class="vendor-card block bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 active:scale-[0.98]">
+          <div class="h-44 bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center">
+            <i class="fas fa-bread-slice text-7xl text-amber-500 opacity-50"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-semibold text-gray-800">Aunty Grace Hausa Koko</h3>
+              <div class="flex items-center gap-1 text-sm">
+                <span class="status-open">● Open</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+              Fresh koko, koose, bread, tea, oats – perfect morning energy
+            </p>
+            <div class="bg-blue-600 text-white text-center py-3.5 rounded-2xl font-semibold">
+              View Menu
+            </div>
+          </div>
+        </a>
+
+        <a href="menu-vendor.html" class="vendor-card block bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 active:scale-[0.98]">
+          <div class="h-44 bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center">
+            <i class="fas fa-egg text-7xl text-amber-500 opacity-50"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-semibold text-gray-800">Uncle Joe's Egg & Tea Spot</h3>
+              <div class="flex items-center gap-1 text-sm">
+                <span class="status-closed">● Closed</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+              Boiled/fried egg, tea, coffee, bread with margarine – quick breakfast
+            </p>
+            <div class="bg-blue-600 text-white text-center py-3.5 rounded-2xl font-semibold">
+              View Menu
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Lunch & Dinner Sellers -->
+    <div id="lunch-section" class="vendor-group">
+      <h2 class="text-2xl font-bold text-gray-800 mb-5 flex items-center gap-3">
+        <i class="fas fa-utensils text-blue-600"></i> Lunch & Dinner Sellers
+      </h2>
+      <div class="space-y-6">
+        <a href="menu-vendor.html" class="vendor-card block bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 active:scale-[0.98]">
+          <div class="h-44 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+            <i class="fas fa-utensils text-7xl text-blue-500 opacity-50"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-semibold text-gray-800">Aunty Mansa Kitchen</h3>
+              <div class="flex items-center gap-1 text-sm">
+                <span class="status-open">● Open</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+              Waakye, Jollof, Banku & Tilapia – fresh every day near the main gate
+            </p>
+            <div class="bg-blue-600 text-white text-center py-3.5 rounded-2xl font-semibold">
+              View Menu
+            </div>
+          </div>
+        </a>
+
+        <a href="menu-vendor.html" class="vendor-card block bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 active:scale-[0.98]">
+          <div class="h-44 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+            <i class="fas fa-drumstick-bite text-7xl text-blue-500 opacity-50"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-semibold text-gray-800">Brother Joe's Chop Bar</h3>
+              <div class="flex items-center gap-1 text-sm">
+                <span class="status-open">● Open</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+              Fried rice, grilled chicken, kenkey – opposite Tower 1
+            </p>
+            <div class="bg-blue-600 text-white text-center py-3.5 rounded-2xl font-semibold">
+              View Menu
+            </div>
+          </div>
+        </a>
+
+        <a href="menu-vendor.html" class="vendor-card block bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 active:scale-[0.98]">
+          <div class="h-44 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+            <i class="fas fa-bowl-food text-7xl text-blue-500 opacity-50"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-semibold text-gray-800">Maame's Soup Joint</h3>
+              <div class="flex items-center gap-1 text-sm">
+                <span class="status-closed">● Closed</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+              Light soup, groundnut soup, fufu – close to Cafeteria
+            </p>
+            <div class="bg-blue-600 text-white text-center py-3.5 rounded-2xl font-semibold">
+              View Menu
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-blue-950 text-white py-8 text-center text-sm px-5">
+    <p class="font-medium">© 2026 GateFood • Built for your building in Accra</p>
+    <p class="mt-2 opacity-80">
+      Cash on delivery • Tower 1 (Office or Cafeteria)
+    </p>
+  </footer>
+
+  <script>
+    // Category filtering
+    const categoryButtons = document.querySelectorAll('#category-chips button');
+    const breakfastSection = document.getElementById('breakfast-section');
+    const lunchSection = document.getElementById('lunch-section');
+
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active state
+        categoryButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const category = button.dataset.category;
+
+        if (category === 'all') {
+          breakfastSection.style.display = 'block';
+          lunchSection.style.display = 'block';
+        } else if (category === 'breakfast') {
+          breakfastSection.style.display = 'block';
+          lunchSection.style.display = 'none';
+        } else if (category === 'lunch' || category === 'dinner') {
+          breakfastSection.style.display = 'none';
+          lunchSection.style.display = 'block';
+        }
+      });
+    });
+
+    // Make vendor cards clickable (except the inner button)
+    document.querySelectorAll('.vendor-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Prevent navigation if clicking the inner "View Menu" button
+        if (!e.target.closest('a, button')) {
+          const link = card.querySelector('a');
+          if (link) {
+            window.location.href = link.href;
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
